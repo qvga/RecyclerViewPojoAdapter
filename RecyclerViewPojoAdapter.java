@@ -47,7 +47,12 @@ public abstract class RecyclerViewPojoAdapter<T, VH extends RecyclerViewPojoAdap
 
                     @Override
                     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                        return Objects.equals(adapterContent.get(oldItemPosition), newAdapterContent.get(newItemPosition));
+
+                        return
+                                hasStableIds() ?
+                                        getItemId(adapterContent.get(oldItemPosition)) == getItemId(newAdapterContent.get(newItemPosition))
+                                        :
+                                        Objects.equals(adapterContent.get(oldItemPosition), newAdapterContent.get(newItemPosition));
                     }
 
                     @Override
@@ -79,7 +84,13 @@ public abstract class RecyclerViewPojoAdapter<T, VH extends RecyclerViewPojoAdap
         return adapterContent.size();
     }
 
+    @Override
+    public final long getItemId(int position) {
+        return getItemId(adapterContent.get(position));
+    }
 
+    abstract long getItemId(T item);
+    
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(View itemView) {
             super(itemView);
